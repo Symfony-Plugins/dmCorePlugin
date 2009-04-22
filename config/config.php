@@ -1,7 +1,7 @@
 <?php
 
 sfConfig::add(array(
-  'dm_version'     => '5.0.0_DEV',
+  'dm_version'     => '5.0-SNAPSHOT',
   'dm_core_dir'    => realpath(dirname(__FILE__)."/.."),
   'dm_core_asset'  => 'dm/core'
 ));
