@@ -18,7 +18,7 @@ class dmModuleManager
   {
   	if ($this->config === null)
   	{
-      $this->config = include(sfContext::getInstance()->getConfigCache()->checkConfig('config/modules.yml'));
+      $this->config = include(sfContext::getInstance()->getConfigCache()->checkConfig('config/dm/modules.yml'));
   	}
   	return $this->config;
   }
