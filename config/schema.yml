@@ -1,0 +1,248 @@
+connection:           propel
+noXsd:                false
+defaultIdMethod:      native
+package:              plugins.dmCorePlugin.lib.model
+
+classes:
+  
+  DmLang:
+    columns:
+      name:                   { type: varchar(255), index: unique, required: true }
+      lang:                   { type: varchar(255), required: true, default: "en" }
+  
+  DmAbbr:
+    columns:
+      nanme:                  { type: varchar(255), index: unique, required: true }
+      title:                  { type: varchar(255), required: true }
+  
+  DmRedirect:
+    columns:
+      source:                 { type: varchar(255), index: unique, required: true }
+      dest:                   { type: varchar(255), required: false }
+
+  DmSession:
+    columns:
+      id:
+      sess_id:                { type: varchar(127), index: unique, required: true }
+      last_time:              { type: integer, required: true }
+      arrival_time:           { type: integer, required: true }
+      ip:                     { type: varchar(31), required: false }
+      address:                { type: longvarchar, required: false }
+      dm_profile_id:          { type: integer, foreignClass: DmProfile, foreignReference: id, required: false, onDelete: setNull }
+      dm_page_id:             { type: integer, foreignClass: DmPage, foreignReference: id, required: false, onDelete: setNull }
+      url:                    { type: varchar(255), required: false }
+      nb_pages:               { type: integer, required: true, default: 0 }
+      browser_name:           { type: varchar(31), required: false }
+      browser_version:        { type: varchar(15), required: false }
+      platform:               { type: varchar(31), required: false }
+      is_crawler:             { type: boolean, required: true, default: false }
+      is_rss_reader:          { type: boolean, required: true, default: false }
+      is_banned:              { type: boolean, required: true, default: false }
+      is_mobile_device:       { type: boolean, required: true, default: false }
+      user_agent:             { type: varchar(255), required: false }
+      status_code:            { type: varchar(3) }
+      content_type:           { type: varchar(31) }
+      content_length:         { type: integer }
+      time:                   { type: integer }
+      history:                { type: longvarchar, required: false }
+      is_cached:              { type: boolean, required: true, default: false }
+
+  DmMediaFolder:
+    columns:
+      nom:                    { type: varchar(255), required: true }
+      tree_left:              { type: integer, required: true }
+      tree_right:             { type: integer, required: true }
+      tree_parent:            { type: integer, foreignClass: DmMediaFolder, foreignReference: id, required: false, onDelete: cascade }
+      topic_id:               { type: integer }
+      relative_path:          { type: varchar(255), index: unique, required: true, default: "" }
+
+  DmMediaFile:
+    columns:
+      dm_media_folder_id:       { type: integer, foreignClass: DmMediaFolder, foreignReference: id, required: true, onDelete: cascade, onUpdate: cascade }
+      nom:                      { type: varchar(255), required: true }
+      description:              { type: longvarchar }
+      legend:                   { type: varchar(255) }
+      author:                   { type: varchar(255) }
+      copyright:                { type: varchar(255) }
+      type:                     { type: varchar(10) }
+      filesize:                 { type: integer }
+      dim:                      { type: varchar(15) }
+      created_at:
+      updated_at:
+    uniques:
+      uk_folder_filename:       [ dm_media_folder_id, nom ]
+
+  DmProfile:
+    columns:
+      user_id:            { type: integer, foreignClass: sfGuardUser, foreignReference: id, onDelete: cascade }
+      email:              { type: varchar(255), required: false }
+      is_visible:         { type: boolean, required: true, default: true } # est visible par un simple webmestre dans l'admin
+      created_at:
+      updated_at:
+
+  DmBlob:
+    columns:
+      style:                  { type: varchar(31), required: true, default: "default" }
+      jpg_quality:            { type: varchar(31), required: true, default: "default" }
+      title_position:         { type: varchar(31), required: true, default: "title_out" }
+      image_position:         { type: varchar(31), required: true, default: "img_left" }
+      image_width:            { type: integer, required: true, default: 200 }
+      created_at:
+      updated_at:
+
+  DmBlobI18n:
+    columns:
+      name:                   { type: varchar(255) }
+      text:                   { type: longvarchar }
+      dm_media_file_id:       { type: integer, foreignClass: DmMediaFile, foreignReference: id, required: false, onDelete: setNull }
+
+  DmSite:
+    columns:
+      
+      xiti:                   { type: longvarchar }
+      xiti_active:            { type: boolean, required: true, default: false }
+      
+      gdata_key:              { type: varchar(127) }
+      gmap_key:               { type: varchar(127) }
+      
+      translation:            { type: boolean, required: true, default: false }
+      language_test:          { type: boolean, required: true, default: false }
+      
+      refresh_index:          { type: boolean, required: true, default: true }
+      
+      jpg_quality:            { type: integer, required: true, default: 92 }
+      image:                  { type: varchar(127) }
+      is_first_launch:        { type: boolean, required: true, default: true }
+      is_working_copy:        { type: boolean, required: true, default: true }
+      index_populated_at:     { type: date }
+      updated_at:
+      
+  DmSiteI18n:
+    columns:
+      name:                   { type: varchar(127), required: true }
+      
+      google_file_name:       { type: varchar(31) }
+      urchin_tracker:         { type: varchar(31) }
+      urchin_tracker_active:  { type: boolean, required: true, default: false }
+      
+      yahoo_file_name:        { type: varchar(31) }
+      yahoo_file_content:     { type: varchar(31) }
+      yahoo_active:           { type: boolean, required: true, default: false }
+      
+      is_published:           { type: boolean, required: true, default: true }
+      is_indexable:           { type: boolean, required: true, default: false }
+
+  DmDefaultMeta:
+    columns:
+      title_prefix:           { type: varchar(127) }
+      title_suffix:           { type: varchar(127) }
+      description_prefix:     { type: varchar(127) }
+      description_suffix:     { type: varchar(127) }
+      is_approved:            { type: boolean, required: true, default: true }
+      updated_at:
+
+  DmAutoSeo:
+    columns:    
+      module:                 { type: varchar(127), required: true }
+      action:                 { type: varchar(127), required: true }
+    uniques:
+      module_action:          [ module, action ]
+
+  DmAutoSeoI18n:
+    columns:    
+      slug:                   { type: varchar(255), required: true }
+      name:                   { type: varchar(255), required: true }
+      title:                  { type: varchar(255), required: true }
+      h1:                     { type: varchar(255), required: false }
+      description:            { type: varchar(255), required: false }
+      strip_words:            { type: varchar(255), required: true }
+
+  DmPage:
+    columns:
+      dm_page_view_id:        { type: integer, foreignClass: DmPageView, foreignReference: id, required: true, onDelete: cascade }
+      tree_left:              { type: integer, required: true }
+      tree_right:             { type: integer, required: true }
+      tree_parent:            { type: integer, foreignClass: DmPage, foreignReference: id, required: false, onDelete: cascade }
+      topic_id:               { type: integer }
+      module:                 { type: varchar(127) }
+      action:                 { type: varchar(127) }
+      object_id:              { type: integer }
+      is_approved:            { type: boolean, required: true, default: true }
+      is_public:              { type: boolean, required: true, default: true } # ne requiert pas d'être loggé
+      updated_at:
+    uniques:
+      object_action:          [ module, action, object_id ]
+  
+  DmPageI18n:
+    columns:
+      slug:                   { type: varchar(255), required: false }
+      slug_cache:             { type: varchar(255), required: false }
+      name:                   { type: varchar(255), required: false }
+      name_cache:             { type: varchar(255), required: false }
+      title:                  { type: varchar(255), required: false }
+      h1:                     { type: varchar(255), required: false }
+      description:            { type: varchar(255), required: false }
+
+  DmPageView:
+    columns:
+      dm_layout_id:           { type: integer, foreignClass: DmLayout, foreignReference: id, required: true, onDelete: cascade }
+
+  DmLayout:
+    columns:
+      name:                   { type: varchar(127), required: true, index: unique }
+      has_head:               { type: boolean, required: true, default: true }
+      has_foot:               { type: boolean, required: true, default: true }
+      has_left:               { type: boolean, required: true, default: true }
+      has_right:              { type: boolean, required: true, default: true }
+      css_class:              { type: varchar(127) }
+      updated_at:
+
+  DmLayoutPart:
+    columns:
+      dm_layout_id:           { type: integer, foreignClass: DmLayout, foreignReference: id, required: true, onDelete: cascade }
+      type:                   { type: varchar(31), required: true }
+    uniques:
+      layout_type:            [ dm_layout_id, type ]
+
+  DmZone:
+    columns:
+      dm_page_view_id:        { type: integer, required: false, foreignClass: DmPageView, foreignReference: id, onDelete: cascade}
+      dm_layout_part_id:      { type: integer, required: false, foreignClass: DmLayoutPart, foreignReference: id, onDelete: cascade}
+      css_class:              { type: varchar(127) }
+      rank:                   { type: integer }
+      updated_at:
+    
+  DmSlot:
+    columns:
+      dm_zone_id:             { type: integer, foreignClass: DmZone, foreignReference: id, index: true, required: true, onDelete: cascade}
+      type:                   { type: varchar(127), required: true }
+      module:                 { type: varchar(127) }
+      action:                 { type: varchar(127) }
+      value:                  { type: longvarchar }
+      rank:                   { type: integer }
+      updated_at:
+    
+  Catalogue:
+    columns:
+      cat_id:                 { type: integer, required: true, autoIncrement: true, primaryKey: true }
+      name:                   { type: varchar(63), required: true, default: "" }
+      source_lang:            { type: varchar(63), required: true, default: "" }
+      target_lang:            { type: varchar(63), required: true, default: "" }
+      date_created:           { type: integer, required: true, default: 0 }
+      date_modified:          { type: integer, required: true, default: 0 }
+      
+  TransUnit:
+    columns:
+      msg_id:               { type: integer, required: true, autoIncrement: true, primaryKey: true }
+      cat_id:               { type: integer, required: true, default: 1, foreignClass: Catalogue, foreignReference: cat_id }
+      source:               { type: longvarchar, required: true }
+      target:               { type: longvarchar, required: true }
+      meta:                 { type: varchar(63) }
+      is_approved:          { type: boolean, required: true, default: false }
+      
+  DmSentMail:
+    columns:
+      name:                 { type: varchar(255) }
+      header:               { type: longvarchar }
+      description:          { type: longvarchar }
+      created_at:

@@ -1,0 +1,12 @@
+.s16, .s16block {
+  background: transparent url(../images/16/sprite.png) no-repeat top left;
+  height: 16px;
+}
+.s16 {
+  padding-left: 18px;
+}
+.s16block {
+  width: 16px;
+  display: block;
+  font-size: 0;
+}
